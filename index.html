@@ -58,6 +58,8 @@
     <link rel="stylesheet" href="styles.css">
 
 
+
+
       <style>
     #view-source {
       position: fixed;
@@ -68,8 +70,11 @@
       margin-bottom: 40px;
       z-index: 900;
     }
-    </style>
 
+    input[type=checkbox] {
+      transform: scale(3.5);
+    }
+    </style>
 
 
   </head>
@@ -108,19 +113,19 @@
             <h6 style="margin-left: 10px">This map informs users where crimes have happened before in San Francisco to help ensure their safety.</h6>
 
             <!-- Accent-colored raised button with ripple -->
-            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" style="margin-top: 25px; margin-bottom: 25px">
+            <!--<button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" style="margin-top: 25px; margin-bottom: 25px">
                 Map1
             </button>
 
             <!-- Accent-colored raised button with ripple -->
-            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" style="margin-bottom: 25px">
+            <!--<button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" style="margin-bottom: 25px">
                 Map2
             </button>
 
             <!-- Accent-colored raised button with ripple -->
-            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" style="margin-bottom: 25px">
+            <!--<button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" style="margin-bottom: 25px">
                 Map3
-            </button>
+            </button>-->
 
 
             <div class="mdl-layout-spacer"></div>
@@ -145,7 +150,7 @@
                 </div>
 
 
-            <svg fill="red" width="175px" height="175px" viewBox="-0.5 0 1 1" class="demo-chart mdl-cell mdl-cell--4-col mdl-cell--3-col-desktop">
+            <svg fill="red" width="175px" height="100px" viewBox="-0.5 0 1 1" class="demo-chart mdl-cell mdl-cell--4-col mdl-cell--3-col-desktop">
               <use xlink:href="#piechart" mask="url(#piemask)" />
               <text x="0.5" y="0.5" font-family="Oswald" font-size="0.25" fill="pink" text-anchor="middle" dy="0.1">0.917<tspan dy="-0.07" font-size="0.2"></tspan></text>
             </svg>
@@ -156,19 +161,30 @@
 
 
 
+    <div style="width: 100%; height: 45px" id="input">
+      <input type="file" id="file-input" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
 
+      <p style="display:inline" color="white"><font color="white">Set Start Position->->->->->-</font></p>
+      <label class="switch">
+        <input type="checkbox" id="toggleStart" onclick="setStart()">
+        <span class="slider"></span>
+      </label>
 
+      <p style="display:inline"><font color="white">---------Set Destination->->->->->-</font></p>
+      <label class="switch">
+        <input type="checkbox" id="toggleEnd" onclick="setEnd()">
+        <span class="slider"></span>
+      </label>
 
-             <input type="file" id="file-input" >
-    <div id="file-content"></div>
-    <label class="switch">
-      <input type="checkbox" id="toggleStart" onclick="setStart()">
-      <span class="slider"></span>
-    </label>
-    <label class="switch">
-      <input type="checkbox" id="toggleEnd" onclick="setEnd()">
-      <span class="slider"></span>
-    </label>
+      <select style="margin-left: 30px" onchange="changeIcons()" id="styleSelector">
+        <option value="Classic">Classic</option>
+        <option value="DangerDoge">Danger Doge</option>
+      </select>
+
+      <!--<input type="text" name="Start Pos:" align="right" id="startPosInput" oninput="startPosInput()">-->
+      <!--<input type="text" name="EndPos:" align="right" id="endPosInput" oninput="endPosInput()">-->
+
+    </div>
 
     <div style="width: 100%; height: 79%" id="mapContainer"></div>
     <script>
@@ -197,6 +213,10 @@
 
           //SET MARKER OBJECTS. READ DATA____________________________________________________
           //Array of all longitudes and latitudes
+          var mainIconUrl, dangerIconUrl, selectionUrl;
+          changeIconSettings(document.getElementById('styleSelector').value);
+
+
           var longitudes = [];
           var latitudes = [];
 
@@ -266,12 +286,12 @@
             }
             markers.length = 0;
 
-            var icon = new H.map.Icon("images/IconDanger.png");
+            var icon = new H.map.Icon(dangerIconUrl);
             var i;
             var coords;
             for (i = 0; i < longitudes.length; i ++) {
               if (i >= maxCalculable) {
-                icon = new H.map.Icon("images/Icon.png");
+                icon = new H.map.Icon(mainIconUrl);
               }
 
               coords = {lat: latitudes[i], lng: longitudes[i]},
@@ -415,13 +435,17 @@
             //Set start and end
             routingParameters.waypoint0 = startPos;
             routingParameters.waypoint1 = endPos;
-
+            console.log(startPos);
+            console.log(endPos);
             console.log("Calculating no go zones!");
 
             console.log(routingParameters.avoidareas);
 
             // Get the routing service so stuff can be done
             //var router = platform.getRoutingService();
+
+            //Clearing LineString
+            deleteExtraLines();
 
             // Calculate the route!
             router.calculateRoute(routingParameters, onResult,
@@ -439,12 +463,10 @@
               var coord = mmap.screenToGeo(evt.currentPointer.viewportX, evt.currentPointer.viewportY);
               console.log(coord);
               if (waitingForStart || waitingForEnd) {
-                //Deleting existing route LineStrings
-                deleteExtraLines();
 
                 console.log("Setting start/end!")
                 //Toggling off check box
-                var icon = new H.map.Icon("images/IconWaypoint.png");
+                var icon = new H.map.Icon(selectionUrl);
 
                 if (waitingForStart) {
                   waitingForStart = false;
@@ -518,6 +540,87 @@
               map.removeObject(routeLineB);
             }
           }
+
+          function changeIcons() {
+            changeIconSettings(document.getElementById('styleSelector').value);
+          }
+
+          function changeIconSettings(theme) {
+            console.log("Changing Icons!");
+
+            if (theme == "Classic") {
+              mainIconUrl = "images/Icon.png"
+              selectionUrl = "images/IconWaypoint.png"
+              dangerIconUrl = "images/IconDanger.png"
+            } if (theme == "DangerDoge") {
+              mainIconUrl = "images/doge2.jpeg"
+              selectionUrl = "images/doge3.png"
+              dangerIconUrl = "images/doge1.jpg"
+            }
+            console.log(document.getElementById('styleSelector').value);
+            console.log(mainIconUrl + ", " + selectionUrl + ", " + dangerIconUrl);
+          }
+
+          // function startPosInput() {
+          //   posInput(0);
+          // }
+          //
+          // function endPosInput() {
+          //   posInput(1);
+          // }
+          //
+          // function posInput(inputType) {
+          //   var inputField;
+          //   if (inputType == 0) {
+          //     inputField = document.getElementById("startPosInput");
+          //   } else {
+          //     inputField = document.getElementById("endPosInput");
+          //   }
+          //   var splitData = inputField.value.split(" ");
+          //
+          //   var valLat = 0
+          //   valLat = parseFloat(splitData[0]);
+          //   var valLng = 0;
+          //   if (splitData.length > 1) {
+          //     valLng = splitData[1];
+          //   }
+          //
+          //   //Proceed if coordinates are input
+          //   if (valLat != null && valLng != null) {
+          //     console.log(valLat);
+          //     console.log(valLng);
+          //
+          //     if (inputType == 0) {
+          //       //Create a new marker if none exist yet
+          //       if (startMarker != null) {
+          //         map.removeObject(startMarker);
+          //       }
+          //
+          //       var icon = new H.map.Icon("images/IconWaypoint.png");
+          //       startMarker = new H.map.Marker({lat: valLat, lng: valLng}, {icon: icon});
+          //       map.addObject(startMarker);
+          //
+          //       startPos = 'geo!' + valLat + ',' + valLng;
+          //       console.log(startMarker);
+          //     } else {
+          //       //Create a new marker if none exist yet
+          //       if (endMarker != null) {
+          //         map.removeObject(endMarker);
+          //       }
+          //
+          //       var icon = new H.map.Icon("images/IconWaypoint.png");
+          //       endMarker = new H.map.Marker({lat: valLat, lng: valLng}, {icon: icon});
+          //       map.addObject(endMarker);
+          //
+          //       endPos = 'geo!' + valLat + ',' + valLng;
+          //       console.log(endMarker);
+          //     }
+          //   }
+          //
+          //   if (startPos != null && endPos != null) {
+          //     calcRoute();
+          //   }
+          // }
 
           //Load behavior for interaction with map
           var behavior = new H.mapevents.Behavior(new H.mapevents.MapEvents(map));
