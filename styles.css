@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-html, body {
-  font-family: 'Roboto', 'Helvetica', sans-serif;
+html, body, h1, h2 {
+  font-family: 'Oswald', 'Helvetica', sans-serif;
 }
 .demo-avatar {
   width: 48px;
