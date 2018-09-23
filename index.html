@@ -1,0 +1,349 @@
+<!--
+  Material Design Lite
+  Copyright 2015 Google Inc. All rights reserved.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      https://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License
+-->
+<html lang="en">
+  <head>
+      
+          
+    <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+    <script src="http://js.api.here.com/v3/3.0/mapsjs-core.js"type="text/javascript" charset="utf-8"></script>
+    <script src="http://js.api.here.com/v3/3.0/mapsjs-service.js"type="text/javascript" charset="utf-8"></script>
+    <script src="http://js.api.here.com/v3/3.0/mapsjs-ui.js"type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript" src="https://js.api.here.com/v3/3.0/mapsjs-mapevents.js"></script>
+    <link rel="stylesheet" type="text/css"
+      href="http://js.api.here.com/v3/3.0/mapsjs-ui.css" />
+      
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="A map on crime in the Bay Area.">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+    <title>Navigo</title>
+
+    <!-- Add to homescreen for Chrome on Android -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <link rel="icon" sizes="192x192" href="images/location2.png">
+
+    <!-- Add to homescreen for Safari on iOS -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="Crime Data">
+    <link rel="apple-touch-icon-precomposed" href="images/location2.png">
+
+    <!-- Tile icon for Win8 (144x144 + tile color) -->
+    <meta name="msapplication-TileImage" content="images/touch/ms-touch-icon-144x144-precomposed.png">
+    <meta name="msapplication-TileColor" content="#3372DF">
+
+    <!-- SEO: If your mobile URL is different from the desktop URL, add a canonical link to the desktop page https://developers.google.com/webmasters/smartphone-sites/feature-phones -->
+    <!--
+    <link rel="canonical" href="http://www.example.com/">
+    -->
+
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:regular,bold,italic,thin,light,bolditalic,black,medium&amp;lang=en">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.cyan-light_blue.min.css">
+    <link rel="stylesheet" href="styles.css">
+      
+    
+      <style>
+    #view-source {
+      position: fixed;
+      display: block;
+      right: 0;
+      bottom: 0;
+      margin-right: 40px;
+      margin-bottom: 40px;
+      z-index: 900;
+    }
+    </style>
+
+      
+      
+  </head>
+    
+    
+    
+    
+  <body>
+          
+    
+      
+      
+      
+      
+      
+    <div class="demo-layout mdl-layout mdl-js-layout mdl-layout--fixed-drawer mdl-layout--fixed-header">
+      
+        
+        
+        
+      <div class="demo-drawer mdl-layout__drawer mdl-color--blue-grey-900 mdl-color-text--blue-grey-50">
+        
+          <header class="demo-drawer-header">
+            <img src="images/navigo.png" width="200" height="73.5">    
+          </header>
+          
+        <nav class="demo-navigation mdl-navigation mdl-color--blue-grey-800">
+            
+          <!--<a class="mdl-navigation__link" href="#top"><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">home</i>Home</a>-->
+          <!--<a class="mdl-navigation__link" href="#updates"><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">flag</i>Updates</a>-->
+          <!--<a class="mdl-navigation__link" href="#about"><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">help_outline</i>About</a>-->
+        
+            <h4 id="updates" style="text-align:center">Updates</h4>
+            <h6 style="margin-left: 10px">We will continue to update the area as more and more incidents happen.</h6>
+            <h4 id="about" style="text-align:center">About</h4>
+            <h6 style="margin-left: 10px">This map informs users where crimes have happened before in San Francisco to help ensure their safety.</h6>
+            
+            <!-- Accent-colored raised button with ripple -->
+            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" style="margin-top: 25px; margin-bottom: 25px">
+                Map1
+            </button>
+            
+            <!-- Accent-colored raised button with ripple -->
+            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" style="margin-bottom: 25px">
+                Map2
+            </button>
+            
+            <!-- Accent-colored raised button with ripple -->
+            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" style="margin-bottom: 25px">
+                Map3
+            </button>
+            
+            
+            <div class="mdl-layout-spacer"></div>
+            <h6 style="margin-left: 10px">Created by Andrew Cheng, Christina Shao, Hanzen Shou, and Michael Yang</h6>
+            
+        </nav>
+          
+      </div>
+        
+        
+        
+      <main class="mdl-layout__content mdl-color--blue-grey-900">
+          
+          
+        
+          <div class="mdl-grid demo-content">
+          
+            <div class="demo-charts mdl-color--blue-grey-800 mdl-shadow--2dp mdl-cell mdl-cell--12-col mdl-grid">
+                
+                <div style="margin-left: 50px">
+                    <h1 id="top" style="text-align:center; color:white">Crime Map Of San Francisco</h1>
+                </div>
+
+            <svg fill="red" width="200px" height="200px" viewBox="-0.5 0 1 1" class="demo-chart mdl-cell mdl-cell--4-col mdl-cell--3-col-desktop">
+              <use xlink:href="#piechart" mask="url(#piemask)" />
+              <text x="0.5" y="0.5" font-family="Roboto" font-size="0.25" fill="pink" text-anchor="middle" dy="0.1">91.7<tspan dy="-0.07" font-size="0.2">%</tspan></text>
+            </svg>
+                
+            <h2 style="color:white">Overall Crimes Per Person in San Francisco</h2>
+                
+          </div>    
+          
+             
+          
+          
+          
+              
+             <input type="file" id="file-input" >
+    <div id="file-content"></div>
+
+    <div style="width: 100%; height: 79%" id="mapContainer"></div>
+    <script>
+
+      // Initialize the platform object:
+      var platform = new H.service.Platform({
+      'app_id': 'cbVwle3x1mW6B0PjTFo7',
+      'app_code': 'zfytgqC1VV54l4c_swljLA'
+      });
+
+      // Obtain the default map types from the platform object
+      var maptypes = platform.createDefaultLayers();
+
+      // Instantiate (and display) a map object:
+      var map = new H.Map(
+      document.getElementById('mapContainer'),
+      maptypes.normal.map,
+      {
+        zoom: 10,
+        center: { lng: -122.4194, lat: 37.7749 }
+      });
+
+      //SET MARKER OBJECTS. READ DATA____________________________________________________
+      //Array of all longitudes and latitudes
+      var longitudes = [13.3851, 13.5];
+      var latitudes = [2.53075, 2.5];
+
+      function readSingleFile(e) {
+        console.log("Reading File!");
+
+        var file = e.target.files[0];
+        if (!file) {
+          return;
+        }
+        var reader = new FileReader();
+        reader.onload = function(e) {
+          var contents = e.target.result;
+          // Display file content
+
+          displayContents(contents);
+        };
+        reader.readAsText(file);
+      }
+
+      function displayContents(contents) {
+        console.log("Displaying Contents!");
+        var element = document.getElementById('file-content');
+        //element.innerHTML = contents;
+        console.log(contents);
+        splitContents(contents);
+      }
+
+      function splitContents(toBeSplit) {
+        var splitData = toBeSplit.replace(/(?:\r\n|\r|\n)/g, " ");
+        splitData = splitData.split(" ");
+        console.log(splitData);
+        loadCoords(splitData);
+      }
+
+      function loadCoords(info) {
+        var i;
+        var startLine = 0;
+
+        for (i = 0; i < Math.min((info.length/2) - startLine, 20000 + startLine); i ++) {
+          longitudes[i] = info[(i + startLine)*2];
+          latitudes[i] = info[(i + startLine)*2 + 1];
+        }
+
+        console.log(latitudes);
+        console.log(longitudes);
+
+        loadIcons();
+      }
+
+      document.getElementById('file-input').addEventListener('change', readSingleFile, false);
+
+      function loadIcons() {
+        //Create an icon, an object holding the latitude and longitude, and a marker:
+        var icon = new H.map.Icon("images/location.png");
+        var i;
+        for (i = 0; i < longitudes.length; i ++) {
+          var coords = {lat: latitudes[i], lng: longitudes[i]},
+            marker = new H.map.Marker(coords, {icon: icon});
+
+          // Add the marker to the map and center the map at the location of the marker:
+          map.addObject(marker);
+        }
+        map.setCenter(coords);
+      }
+
+      //Look around!
+      function panLeft(mmap){
+        var x = 100;
+        var viewPort = mmap.getViewPort();
+
+        var pan = function() {
+          x += 5;
+          viewPort.interaction(x, 100);
+        }
+
+        viewPort.startInteraction(H.map.render.RenderEngine.InteractionModifiers.COORD);
+        setInterval(pan, 15);
+      }
+
+      var behavior = new H.mapevents.Behavior(new H.mapevents.MapEvents(map));
+
+      //Make UI
+      var ui = H.ui.UI.createDefault(map, maptypes);
+
+    </script>
+             
+              <!--
+                    <div class="demo-cards mdl-cell mdl-cell--4-col mdl-cell--8-col-tablet mdl-grid mdl-grid--no-spacing">
+            <div class="demo-updates mdl-card mdl-shadow--2dp mdl-cell mdl-cell--4-col mdl-cell--4-col-tablet mdl-cell--12-col-desktop">
+              <div class="mdl-card__title mdl-card--expand mdl-color--teal-300">
+                <h2 class="mdl-card__title-text">Updates</h2>
+              </div>
+              <div class="mdl-card__supporting-text mdl-color-text--grey-600">
+                Read about updates and development here.
+              </div>
+              <div class="mdl-card__actions mdl-card--border">
+                <a href="#updates" class="mdl-button mdl-js-button mdl-js-ripple-effect">Read More</a>
+              </div>
+            </div>
+            
+            <div class="demo-separator mdl-cell--1-col"></div>
+              
+            <div class="demo-options mdl-card mdl-color--deep-purple-500 mdl-shadow--2dp mdl-cell mdl-cell--4-col mdl-cell--3-col-tablet mdl-cell--12-col-desktop">
+              <div class="mdl-card__supporting-text mdl-color-text--blue-grey-50">
+                <h2 class="mdl-card__title-text">What does this map do?</h2>
+                <p>This map gives information about places affected by crime in San Franciso.</p>
+                
+                <!--
+                  
+                <ul>
+                  <li>
+                    <label for="chkbox1" class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect">
+                      <input type="checkbox" id="chkbox1" class="mdl-checkbox__input">
+                      <span class="mdl-checkbox__label">Option1</span>
+                    </label>
+                  </li>
+                  <li>
+                    <label for="chkbox2" class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect">
+                      <input type="checkbox" id="chkbox2" class="mdl-checkbox__input">
+                      <span class="mdl-checkbox__label">Option2</span>
+                    </label>
+                  </li>
+                  
+                </ul>
+                  
+              </div>
+                              
+              <div class="mdl-card__actions mdl-card--border">
+                    <a href="#about" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-color-text--blue-grey-50">About</a>
+                    <div class="mdl-layout-spacer"></div>
+                    <i class="material-icons">location_on</i>
+              </div>
+                
+            </div>
+              
+          </div>
+              
+        </div> -->
+          
+          </div>
+          
+      </main>
+        
+    </div>
+      
+      <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" style="position: fixed; left: -1000px; height: -1000px;">
+        <defs>
+          <mask id="piemask" maskContentUnits="objectBoundingBox">
+            <circle cx=0.5 cy=0.5 r=0.49 fill="white" />
+            <circle cx=0.5 cy=0.5 r=0.40 fill="black" />
+          </mask>
+          <g id="piechart">
+            <circle cx=0.5 cy=0.5 r=0.5 />
+            <path d="M 0.5 0.5 0.5 0 A 0.5 0.5 0 0 1 0.95 0.28 z" stroke="none" fill="rgba(255, 255, 255, 0.75)" />
+          </g>
+        </defs>
+      </svg>
+
+      <a href="https://github.com/google/material-design-lite/blob/mdl-1.x/templates/dashboard/" target="_blank" id="view-source" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored mdl-color-text--white">View Source</a>
+    <script src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+  </body>
+</html>
